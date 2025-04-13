@@ -1,0 +1,20 @@
+FROM scratch AS rpms
+
+COPY rpms/* /rpms/
+
+# Change this to your current image!
+FROM quay.io/fedora-ostree-desktops/kinoite:41
+
+# Install custom local RPMs. Just drop them in the ./rpms folder.
+RUN --mount=type=bind,from=rpms,source=/rpms,target=/rpms \
+    --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
+    dnf5 install -y --setopt=keepcache=1 /rpms/*
+
+# Clean var folder.
+RUN find /var/* -maxdepth 0 -type d \! -name cache -exec rm -fr {} \; && \
+    mkdir -p /var/tmp && chmod -R 1777 /var/tmp && \
+    ostree container commit
+
+RUN bootc container lint

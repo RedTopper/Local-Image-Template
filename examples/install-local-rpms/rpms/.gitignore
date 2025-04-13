@@ -1,0 +1,2 @@
+# Place your local .rpm files to be installed in your build here.
+*.rpm
