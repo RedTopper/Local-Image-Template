@@ -1,6 +1,7 @@
 FROM quay.io/fedora-ostree-desktops/kinoite:41
 
-# Install custom packages and remove firefox (only needed on base images)
+# Example of how to install rpmfusion and install the gstreamer-plugins/ffmpeg
+# Also includes example of how to remove Firefox if you use the flatpak
 RUN --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
     --mount=type=tmpfs,dst=/tmp \
@@ -10,17 +11,14 @@ RUN --mount=type=cache,dst=/var/cache \
         https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
         https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
     dnf5 install -y --setopt=keepcache=1 --allowerasing \
-        arc-theme \
-        distrobox \
-        ffmpeg gstreamer1-plugins-bad-free-extras gstreamer1-plugins-bad-freeworld gstreamer1-plugins-ugly gstreamer1-vaapi intel-media-driver \
-        tk-devel \
-        qterminal \
-        zsh thefuck just
+        gstreamer1-plugins-bad-free-extras gstreamer1-plugins-bad-freeworld gstreamer1-plugins-ugly gstreamer1-vaapi \
+        ffmpeg intel-media-driver \
+        just zsh
 
-# Override the sddm wallpaper
+# Example of how to override the sddm wallpaper (you can remove this)
 COPY assets/sddm-wallpaper.png /usr/share/wallpapers/Next/contents/images/5120x2880.png
 
-# Clean var folder.
+# Clean var folder to pass linting checks.
 RUN find /var/* -maxdepth 0 -type d \! -name cache -exec rm -fr {} \; && \
     mkdir -p /var/tmp && chmod -R 1777 /var/tmp && \
     ostree container commit
