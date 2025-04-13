@@ -28,8 +28,6 @@ RUN --mount=type=cache,dst=/var/cache \
     for repo in $REPOS; do dnf5 -y copr disable $repo; done
 
 # Clean var folder to pass linting checks.
-RUN find /var/* -maxdepth 0 -type d \! -name cache -exec rm -fr {} \; && \
-    mkdir -p /var/tmp && chmod -R 1777 /var/tmp && \
-    ostree container commit
+RUN rm -rf /var/* && ostree container commit
 
 RUN bootc container lint

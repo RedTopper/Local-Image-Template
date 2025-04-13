@@ -13,8 +13,6 @@ RUN --mount=type=bind,from=rpms,source=/rpms,target=/rpms \
     dnf5 install -y --setopt=keepcache=1 /rpms/*
 
 # Clean var folder to pass linting checks.
-RUN find /var/* -maxdepth 0 -type d \! -name cache -exec rm -fr {} \; && \
-    mkdir -p /var/tmp && chmod -R 1777 /var/tmp && \
-    ostree container commit
+RUN rm -rf /var/* && ostree container commit
 
 RUN bootc container lint
