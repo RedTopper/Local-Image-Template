@@ -39,6 +39,10 @@ switch tag: requires-root
 # Build and switch to new custom image
 update: (build current_time) (switch current_time)
 
+# Get a temporary shell in your built custom image (usefull for checking out the filesystem)
+shell tag="latest": requires-root
+    podman run --rm -it {{ image }}:{{ tag }} /bin/bash
+
 # List out previously built custom images
 [group('List')]
 list-built-images: requires-root
